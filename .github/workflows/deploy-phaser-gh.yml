@@ -23,6 +23,6 @@ jobs:
     - name: Build and Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
-        ACCESS_TOKEN: ${{ secrets.GH_DEPLOY }}
+        ACCESS_TOKEN: ${{ secrets.GH_PAGES }}
         BRANCH: gh-pages
         FOLDER: dist
