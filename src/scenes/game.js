@@ -30,10 +30,11 @@ class GameScene extends Phaser.Scene {
     turtles = createTurtles(this);
     player = createPlayer(this);
     initPhysics(player, turtles, water, land, this);
+    initAnimations(this);
   }
 
   update () {
-    player.update(this);
+    Player.update(this, player);
   }
 }
 
@@ -44,23 +45,33 @@ function initPhysics (player, turtles, water, land, phaser) {
   // this.physics.add.collider(player, water, playerDies, null, this);
 }
 
+function initAnimations (phaser) {
+  Player.animations(phaser);
+}
+
 function createTurtles (phaser) {
-  return new Turtles({
+  return Turtles.init({
     scene: phaser,
     key: 'turtle',
     repeat: 4,
-    setXY: { x: 200, y: 420, stepX: 100 },
+    setXY: { x: 200, y: 420, stepX: 100, stepY: 10 },
     immovable: true,
     allowGravity: false,
   });
 };
 
 function createPlayer (phaser) {
-  return new Player({ scene: phaser, x: 100, y: 325 });
+  return Player.init({
+    scene: phaser,
+    position: {
+      x: 100,
+      y: 300, // y: 325
+    },
+  });
 };
 
 function createWater (phaser) {
-  return new Water({
+  return Water.init({
     scene: phaser,
     position: {
       x: 400,
@@ -70,7 +81,7 @@ function createWater (phaser) {
 }
 
 function createLand (phaser) {
-  return new Land({
+  return Land.init({
     scene: phaser,
     positions: [
       { x: 65, y: 420 },

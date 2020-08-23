@@ -1,34 +1,23 @@
 import turtlePng from '../assets/turtle.png';
+import { TURTLE_KEY } from '../constants';
 
-const TURTLE_KEY = 'turtle';
-
-class Turtles {
-  constructor (config) {
-    this.initTurtles(config);
-  }
-
-  static preload (scene) {
+const Turtles = {
+  preload: scene => {
     scene.load.image(
       TURTLE_KEY,
       turtlePng,
     );
-  }
-
-  initTurtles ({ scene, ...config }) {
-    this.turtles = scene.physics.add.group(config);
+  },
+  init: ({ scene, ...config }) => {
+    return scene.physics.add.group(config);
 
     // this.turtles.children.iterate(function (child) {
     //   child.setBounceY();
     // })
-  }
-
-  getGroup () {
-    return this.stars;
-  }
-}
+  },
+};
 
 export default Turtles;
-
 
 // f (!activeTurtle) {
 //     activeTurtle = Phaser.Math.Between(1, 2);

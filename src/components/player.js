@@ -1,77 +1,65 @@
-import Phaser from 'phaser';
-
 import playerPng from '../assets/player.png';
+import { JUMP_ANIMATION, PLAYER_KEY } from '../constants';
 
-const PLAYER_KEY = 'player';
-const JUMP_ANIMATION = 'jump';
-
-class Player extends Phaser.GameObjects.Sprite {
-  constructor (config) {
-    super(config.scene, config.x, config.y, PLAYER_KEY);
-    this.initAnimations(config.scene);
-    this.initPlayer(config.scene);
-  }
-
-  static preload (scene) {
+const Player = {
+  preload: scene => {
     scene.load.spritesheet(
       PLAYER_KEY,
       playerPng,
       { frameWidth: 20, frameHeight: 150 },
     );
-  }
+  },
+  init: ({ scene, position }) => {
+    const player = scene.physics.add.sprite(position.x, position.y, PLAYER_KEY);
+    player.setData('moving', false);
 
-  initPlayer (scene) {
-    scene.physics.world.enable(this);
-    scene.add.existing(this);
-    this.setData('moving', false);
-  }
-
-  initAnimations (scene) {
+    return player;
+  },
+  animations: scene => {
     scene.anims.create({
       key: JUMP_ANIMATION,
       frames: scene.anims.generateFrameNumbers(PLAYER_KEY, { start: 0, end: 6 }),
       frameRate: 9,
       repeat: 0,
     });
-  }
+  },
+  update: (scene, player) => {
+    if (!player.getData('moving') && player.body.touching.down) {
+      const cursors = scene.input.keyboard.createCursorKeys();
 
-  update (scene) {
-    const cursors = this.scene.input.keyboard.createCursorKeys();
-
-    if (!this.getData('moving')) {
-      if (cursors.left.isDown && this.x > 100 && this.body.touching.down) {
+      if (cursors.left.isDown && player.x > 100) {
         scene.tweens.add({
-          targets: this,
-          x: this.x - 100,
+          targets: player,
+          x: player.x - 100,
           y: 325,
           duration: 750,
           onStart: () => {
-            this.setData('moving', true);
+            player.setData('moving', true);
           },
           onComplete: () => {
-            this.setData('moving', false);
+            player.setData('moving', false);
           },
         });
 
-        this.anims.play('jump');
-      } else if (cursors.right.isDown && this.x < 700 && this.body.touching.down) {
+        player.anims.play('jump');
+      } else if (cursors.right.isDown && player.x < 700) {
         scene.tweens.add({
-          targets: this,
-          x: this.x + 100,
+          targets: player,
+          x: player.x + 100,
           y: 325,
           duration: 750,
           onStart: () => {
-            this.setData('moving', true);
+            player.setData('moving', true);
           },
           onComplete: () => {
-            this.setData('moving', false);
+            player.setData('moving', false);
           },
         });
 
-        this.anims.play('jump');
+        player.anims.play('jump');
       }
     };
-  }
-}
+  },
+};
 
 export default Player;
