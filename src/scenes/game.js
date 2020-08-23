@@ -9,6 +9,7 @@ let turtles;
 let player;
 let water;
 let land;
+const activeTurtles = [];
 
 class GameScene extends Phaser.Scene {
   constructor () {
@@ -35,6 +36,7 @@ class GameScene extends Phaser.Scene {
 
   update () {
     Player.update(this, player);
+    Turtles.update(this, turtles, activeTurtles);
   }
 }
 
@@ -54,7 +56,7 @@ function createTurtles (phaser) {
     scene: phaser,
     key: 'turtle',
     repeat: 4,
-    setXY: { x: 200, y: 420, stepX: 100, stepY: 10 },
+    setXY: { x: 200, y: 420, stepX: 100},
     immovable: true,
     allowGravity: false,
   });
@@ -63,6 +65,7 @@ function createTurtles (phaser) {
 function createPlayer (phaser) {
   return Player.init({
     scene: phaser,
+    immovable: true,
     position: {
       x: 100,
       y: 300, // y: 325

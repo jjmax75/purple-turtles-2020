@@ -1,5 +1,6 @@
-import turtlePng from '../assets/turtle.png';
+import { getRandomInt } from '../utils';
 import { TURTLE_KEY } from '../constants';
+import turtlePng from '../assets/turtle.png';
 
 const Turtles = {
   preload: scene => {
@@ -8,39 +9,28 @@ const Turtles = {
       turtlePng,
     );
   },
-  init: ({ scene, ...config }) => {
-    return scene.physics.add.group(config);
-
-    // this.turtles.children.iterate(function (child) {
-    //   child.setBounceY();
-    // })
+  init: ({ scene, ...config }) => scene.physics.add.group(config),
+  update: (scene, turtles, activeTurtles) => {
+    if (!activeTurtles.length) {
+      const index = getRandomInt(0, 5);
+      activeTurtles.push(turtles.children.entries[index]);
+      scene.tweens.timeline({
+        targets: activeTurtles[0],
+        loop: 0,
+        tweens: [
+          { y: 520, duration: 1500, ease: 'Linear', delay: 500 },
+          {
+            y: 420,
+            duration: 1000,
+            ease: 'Linear',
+            onComplete: () => {
+              activeTurtles.pop(0);
+            },
+          },
+        ],
+      });
+    }
   },
 };
 
 export default Turtles;
-
-// f (!activeTurtle) {
-//     activeTurtle = Phaser.Math.Between(1, 2);
-//     console.log(activeTurtle);
-// 
-//     const turtle = turtles.getChildren()[activeTurtle - 1];
-// 
-//     this.tweens.timeline({
-//       targets: turtle.body.velocity,
-//       loop: 1,
-//       tweens: [
-//         { y: turtle.y + 100, duration: 750},
-//       ],
-//     });
-    // this.tweens.add({
-    //   targets: turtle.body.velocity,
-    //   y: turtle.y + 100,
-    //   duration: 750,
-    //   yoyo: true,
-    //   completeDelay: 1000,
-    //   ease: 'Stepped',
-    //   onComplete: () => {
-    //     activeTurtle = null;
-    //   },
-    // });
-  // }
